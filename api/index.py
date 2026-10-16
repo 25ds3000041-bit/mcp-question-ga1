@@ -51,8 +51,7 @@ def handle(msg: dict, req: Request):
     return {"jsonrpc": "2.0", "id": msg_id, "result": result}
 
 
-@app.post("/")
-@app.post("/mcp")
+@app.post("/{full_path:path}")
 async def mcp(req: Request):
     body = await req.json()
     if isinstance(body, list):              # JSON-RPC batch
@@ -62,7 +61,6 @@ async def mcp(req: Request):
     return out if out is not None else Response(status_code=202)
 
 
-@app.get("/")
-@app.get("/mcp")
+@app.get("/{full_path:path}")
 async def info():
-    return Response(status_code=405, headers={"Allow": "POST"})
+    return {"status": "ok", "message": "MCP server running. Send JSON-RPC via POST."}
